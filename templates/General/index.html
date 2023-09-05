@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        .attendance_btn{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pro{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+  </head>
+  <body>
+
+    <h1 style="text-align: center;">home page</h1><br>
+
+    <a href="logout">Logout</a>
+
+    <div class="attendance_btn">
+        <a href="#" id="markAttendanceBtn" class="btn btn-success">Mark attendance</a>
+    </div>
+
+    <br>
+
+    <a href="viewallatendancereport">View Attendance Reports</a><br>
+    <a href="Applicationforleave">Application for Leave</a><br>
+    <a href="Viewleaveaplications">View Leave Applications</a><br>
+    <a href="ApproveViewleaveaplications">Approve Leave Application</a><br>
+    <a href="overtime">Application for overtime</a><br>
+
+    <div class="pro">
+        <a href="Projects">Projects</a>
+        <a href="Addrawmaterials">Add Raw Materials</a>
+        <a href="Addtool">Add Tools</a>
+    </div>
+
+
+<script>
+    document.getElementById('markAttendanceBtn').addEventListener('click', function() {
+        // Send AJAX request to mark attendance
+        fetch('{% url "mark_attendance" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // Include the CSRF token
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.status);  // Handle the response as needed
+            if (data.status === 'success') {
+                window.alert('Attendance marked successfully!');
+            }else if(data.status === 'already_marked'){
+                window.alert('Attendance already marked...!');
+            }else if(data.status === 'incorrect_punch_timing'){
+                window.alert('Incorrect Punch Timing...!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  </body>
+</html>
+

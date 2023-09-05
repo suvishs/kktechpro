@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+      .OnTimeMorning{
+        color: green;
+      }
+      .LatePunchMorning{
+        color: red;
+      }
+      .OntimeEvening{
+        color: green;
+      }
+      .Overtime{
+        color: orange;
+      }
+        td,th{
+          text-align: center;
+        }
+    </style>
+  </head>
+  <body>
+    <form action="sortattandanceovertime" method="post">
+      {% csrf_token %}
+      <input type="date" name="start_date" required>
+      <input type="date" name="end_date" required>
+      <select name="by_user">
+        <option vlaue="all">all</option>
+        {% for i in users %}
+          <option vlaue="{{i}}">{{i}}</option>
+        {% endfor %}
+      </select>
+      <input type="submit">
+    </form>
+    
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Date</th>
+            <th scope="col">Name</th>
+            <th scope="col">Morning Punch</th>
+            <th scope="col">Evening punch</th>
+            <th scope="col">Morning Punching Status</th>
+            <th scope="col">Evening Punching Status</th>
+            <th scope="col">Working Hour</th>
+            <th scope="col">Overtime Hour</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for i in attendance %}
+          <tr>
+            <th scope="row">{{i.id}}</th>
+            <td>{{i.date}}</td>
+            <td>{{i.usr.username}}</td>
+            <td>{{i.morning_time}}</td>
+            <td>{{i.evening_time}}</td>
+
+            {% if i.punch_stat == 'Overtime' or i.punch_stat == 'OnTimeMorning' or i.punch_stat == 'LatePunchMorning' %}
+              {% if i.punch_stat == "Overtime" %}
+                <td class="OnTimeMorning" style="color: green;"><b>{{i.punch_stat}}</b></td>
+              {% endif %}
+              {% if i.punch_stat == "OnTimeMorning" %}
+                <td class="OnTimeMorning" style="color: green;">{{i.punch_stat}}</td>
+              {% endif %}
+              {% if i.punch_stat == "LatePunchMorning" %}
+                <td class="OnTimeMorning" style="color: orange;">{{i.punch_stat}}</td>
+              {% endif %}
+            {% else %}
+              <td style="color: red; ">Forgoted</td>
+            {% endif %}
+
+          {% if i.punch_stat_evening == 'Overtime' or i.punch_stat_evening == 'OntimeEvening' or i.punch_stat_evening == 'EarlyPunchEvening' %}
+              {% if i.punch_stat_evening == "Overtime" %}
+                <td class="OnTimeMorning" style="color: green;"><b>{{i.punch_stat_evening}}</b></td>
+              {% endif %}
+              {% if i.punch_stat_evening == "OntimeEvening" %}
+                <td class="OnTimeMorning" style="color: green;">{{i.punch_stat_evening}}</td>
+              {% endif %}
+              {% if i.punch_stat_evening == "EarlyPunchEvening" %}
+                <td class="OnTimeMorning" style="color: orange;">{{i.punch_stat_evening}}</td>
+              {% endif %}
+            {% else %}
+              <td style="color: red; ">Forgoted</td>
+            {% endif %}
+
+            {% if i.working_hour %}
+              <td>{{i.working_hour}}</td>
+            {% else %}
+              <td style="color: yellow;">Waiting</td>
+            {% endif %}
+
+            {% if i.difference %}
+              <td>{{i.difference}}</td>
+            {% else %}
+              <td style="color: yellow;">Waiting</td>
+            {% endif %} 
+
+          {% endfor %}
+        </tbody>
+      </table>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  </body>
+</html>
